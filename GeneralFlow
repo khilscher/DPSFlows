@@ -1,0 +1,31 @@
+title DPS - General Flow
+
+participantgroup #lightgreen **IoT Device**
+participant Device Code
+participant DPS Client SDK
+participant IoT Hub Client SDK
+end
+participant DPS
+participant IoT Hub
+
+
+note over DPS: Enrollment setup
+Device Code->DPS Client SDK: ProvisioningDeviceClient.RegisterAsync()
+note over Device Code,DPS Client SDK:Payload: RegistrationID, IDScope, Global Endpoint, \nTransport, Cert/SymKey/Tpm, Additional Data, DeviceID (optional)
+DPS Client SDK->DPS:
+DPS->DPS:Attestation
+DPS-->*F(x):If(CustomAllocationPolicy)
+note over F(x): Do something / read \n"Additional Data"
+DPS<-F(x):Assigned IoT Hub
+destroy F(x)
+DPS->IoT Hub: Register deviceId
+linear
+IoT Hub-->DPS:
+DPS-->DPS Client SDK: 
+DPS Client SDK-->Device Code:
+note over Device Code,DPS:Payload: Assigned IoT Hub, initial twin settings, custom data from F(x) (Optional)
+Device Code->IoT Hub Client SDK: DeviceClient.Create(x509/SymKey)
+IoT Hub Client SDK->IoT Hub: x.509/SymKey Auth
+Device Code->IoT Hub Client SDK: DeviceClient.SendEventAsync()
+IoT Hub Client SDK->IoT Hub: Send messages
+linear off
