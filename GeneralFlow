@@ -6,12 +6,15 @@ participant DPS Client SDK
 participant IoT Hub Client SDK
 end
 participant DPS
+
+
 participant IoT Hub
 
+participant F(x)
 
 note over DPS: Enrollment setup
 Device Code->DPS Client SDK: ProvisioningDeviceClient.RegisterAsync()
-note over Device Code,DPS Client SDK:Payload: RegistrationID, IDScope, Global Endpoint, \nTransport, Cert/SymKey/Tpm, Additional Data, DeviceID (optional)
+note over Device Code,DPS Client SDK:Payload: RegistrationID, IDScope, Global Endpoint, \nTransport, Cert/SymKey/Tpm. \nOptional: Additional Data, DeviceID.
 DPS Client SDK->DPS:
 DPS->DPS:Attestation
 DPS-->*F(x):If(CustomAllocationPolicy)
@@ -23,7 +26,7 @@ linear
 IoT Hub-->DPS:
 DPS-->DPS Client SDK: 
 DPS Client SDK-->Device Code:
-note over Device Code,DPS:Payload: Assigned IoT Hub, initial twin settings, custom data from F(x) (Optional)
+note over Device Code,DPS:Payload: Assigned IoT Hub, initial twin settings. \nOptional: custom data from F(x)
 Device Code->IoT Hub Client SDK: DeviceClient.Create(x509/SymKey)
 IoT Hub Client SDK->IoT Hub: x.509/SymKey Auth
 Device Code->IoT Hub Client SDK: DeviceClient.SendEventAsync()
